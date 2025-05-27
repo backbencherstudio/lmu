@@ -210,7 +210,7 @@ export default function Landingpage() {
       <div className="w-full px-6 sm:px-3 md:px-6 py-3 md:py-4 bg-[#f2f7fa] rounded-lg flex flex-row justify-between items-center mb-4 md:mb-10 gap-3 md:gap-4 overflow-hidden">
         <div className="flex items-center gap-3 md:gap-4">
           <div className="hidden md:flex items-center gap-2 md:gap-4">
-            <div className="self-stretch rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-[#cfd4dc] flex justify-start items-start overflow-hidden">
+            <div className="self-stretch rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline-1 outline-offset-[-1px] outline-[#cfd4dc] flex justify-start items-start overflow-hidden">
               <button
                 onClick={goToPrevious}
                 className="self-stretch min-h-10 md:min-h-12 px-3 md:px-4 py-2 md:py-3 bg-white border-r border-[#cfd4dc] flex justify-center items-center gap-2 hover:bg-[#f8f9fb]"
@@ -250,7 +250,7 @@ export default function Landingpage() {
           </div>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-[#cfd4dc] flex justify-start items-start overflow-hidden">
+          <div className="rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline-1 outline-offset-[-1px] outline-[#cfd4dc] flex justify-start items-start overflow-hidden">
             <button
               onClick={() => setView('agenda')}
               className={`min-h-10 md:min-h-12 px-3 sm:px-4 md:px-5 py-2 md:py-3 bg-white border-r border-[#cfd4dc] flex justify-center items-center gap-1 md:gap-2 ${
