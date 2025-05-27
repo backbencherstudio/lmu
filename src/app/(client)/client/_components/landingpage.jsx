@@ -359,7 +359,7 @@ export default function Landingpage() {
                                   {dayEvents.length > 0 ? (
                                     <div className="w-full">
                                       {dayEvents.map((event, idx) => {
-                                        if (!event || !event.start || !event.end) return null;
+                                        if (!event || !event.start || !event.end) return null;                
                                         
                                         const isHighlighted = dayEvents.length > 0;
                                         return (
