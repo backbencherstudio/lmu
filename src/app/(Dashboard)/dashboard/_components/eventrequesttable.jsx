@@ -6,33 +6,34 @@ import {
   Trash2,
   Clock
 } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import dynamic from 'next/dynamic'
+import { cn } from "@/lib/utils.js"
 import EventRequestApis from '@/app/API/EventreqApi'
-import EventDetailsModal from './EventDetailsModal'
+
+// Dynamic imports for shadcn components
+const Button = dynamic(() => import("@/components/ui/button").then(mod => mod.Button), { ssr: false })
+const Table = dynamic(() => import("@/components/ui/table").then(mod => mod.Table), { ssr: false })
+const TableBody = dynamic(() => import("@/components/ui/table").then(mod => mod.TableBody), { ssr: false })
+const TableCell = dynamic(() => import("@/components/ui/table").then(mod => mod.TableCell), { ssr: false })
+const TableHead = dynamic(() => import("@/components/ui/table").then(mod => mod.TableHead), { ssr: false })
+const TableHeader = dynamic(() => import("@/components/ui/table").then(mod => mod.TableHeader), { ssr: false })
+const TableRow = dynamic(() => import("@/components/ui/table").then(mod => mod.TableRow), { ssr: false })
+const Avatar = dynamic(() => import("@/components/ui/avatar").then(mod => mod.Avatar), { ssr: false })
+const AvatarFallback = dynamic(() => import("@/components/ui/avatar").then(mod => mod.AvatarFallback), { ssr: false })
+const Badge = dynamic(() => import("@/components/ui/badge").then(mod => mod.Badge), { ssr: false })
+const DropdownMenu = dynamic(() => import("@/components/ui/dropdown-menu").then(mod => mod.DropdownMenu), { ssr: false })
+const DropdownMenuContent = dynamic(() => import("@/components/ui/dropdown-menu").then(mod => mod.DropdownMenuContent), { ssr: false })
+const DropdownMenuItem = dynamic(() => import("@/components/ui/dropdown-menu").then(mod => mod.DropdownMenuItem), { ssr: false })
+const DropdownMenuTrigger = dynamic(() => import("@/components/ui/dropdown-menu").then(mod => mod.DropdownMenuTrigger), { ssr: false })
+const Select = dynamic(() => import("@/components/ui/select").then(mod => mod.Select), { ssr: false })
+const SelectContent = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectContent), { ssr: false })
+const SelectItem = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectItem), { ssr: false })
+const SelectTrigger = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectTrigger), { ssr: false })
+const SelectValue = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectValue), { ssr: false })
+const Tabs = dynamic(() => import("@/components/ui/tabs").then(mod => mod.Tabs), { ssr: false })
+const TabsList = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsList), { ssr: false })
+const TabsTrigger = dynamic(() => import("@/components/ui/tabs").then(mod => mod.TabsTrigger), { ssr: false })
+const EventDetailsModal = dynamic(() => import('./EventDetailsModal'), { ssr: false })
 
 export default function EventRequestTable() {
   const [eventRequests, setEventRequests] = useState([])

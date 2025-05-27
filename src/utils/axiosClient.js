@@ -1,7 +1,7 @@
 import { CookieHelper } from "../helper/cookie.helper";
 import axios from "axios";
 
-const API_URL = 'http://192.168.4.3:3002';
+const API_URL = 'https://backend.caymanbizevents.com';
 
 // Get base URL without /api for image URLs
 const getBaseUrl = () => {
