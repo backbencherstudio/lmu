@@ -15,6 +15,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 import ApproveRequestModal from './approverequestmodal'
 import RejectRequestModal from './rejectrequestmodal'
 
+
 export default function EventDetailsModal({ event, isOpen, onClose }) {
   const [showApproveModal, setShowApproveModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false)
@@ -32,7 +33,7 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
 
 
 
-  
+
 
   const formatTime = (time24h) => {
     const [hours, minutes] = time24h.split(':');
