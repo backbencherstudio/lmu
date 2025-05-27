@@ -182,7 +182,7 @@ export default function EventRequest() {
 
       {/* Filters and Table */}
       <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="pb-4">
+        {/* <CardHeader className="pb-4">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full lg:w-auto">
               <TabsList className="grid w-full grid-cols-4 lg:w-auto bg-gray-100">
@@ -214,7 +214,7 @@ export default function EventRequest() {
               </SelectContent>
             </Select>
           </div>
-        </CardHeader>
+        </CardHeader> */}
 
         <CardContent className="p-5">
           <EventRequestTable 
