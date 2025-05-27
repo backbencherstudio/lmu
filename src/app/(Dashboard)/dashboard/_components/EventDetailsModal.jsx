@@ -14,11 +14,13 @@ import { Separator } from "@/components/ui/separator"
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import ApproveRequestModal from './approverequestmodal'
 import RejectRequestModal from './rejectrequestmodal'
+import EventRequestApis from '@/app/API/EventreqApi'
+import { toast } from 'react-hot-toast'
 
-
-export default function EventDetailsModal({ event, isOpen, onClose }) {
+export default function EventDetailsModal({ event, isOpen, onClose, onStatusChange }) {
   const [showApproveModal, setShowApproveModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   if (!event) return null
 
@@ -30,10 +32,6 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
       day: "numeric",
     })
   }
-
-
-
-
 
   const formatTime = (time24h) => {
     const [hours, minutes] = time24h.split(':');
@@ -53,23 +51,41 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
 
   const handleApproveConfirm = async () => {
     try {
-      // Add your API call here to approve the event
-      console.log('Event approved:', event.id)
-      setShowApproveModal(false)
-      onClose()
+      setLoading(true)
+      const response = await EventRequestApis.approveEventRequest(event.id)
+      if (response.success) {
+        toast.success('Event request approved successfully')
+        setShowApproveModal(false)
+        if (onStatusChange) onStatusChange()
+        onClose()
+      } else {
+        toast.error(response.message || 'Failed to approve event request')
+      }
     } catch (error) {
       console.error('Error approving event:', error)
+      toast.error('Failed to approve event request')
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleRejectConfirm = async () => {
     try {
-      // Add your API call here to reject the event
-      console.log('Event rejected:', event.id)
-      setShowRejectModal(false)
-      onClose()
+      setLoading(true)
+      const response = await EventRequestApis.rejectEventRequest(event.id)
+      if (response.success) {
+        toast.success('Event request rejected successfully')
+        setShowRejectModal(false)
+        if (onStatusChange) onStatusChange()
+        onClose()
+      } else {
+        toast.error(response.message || 'Failed to reject event request')
+      }
     } catch (error) {
       console.error('Error rejecting event:', error)
+      toast.error('Failed to reject event request')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -166,6 +182,7 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
                   variant="outline"
                   className="bg-green-100 text-green-600 hover:bg-green-200 hover:text-green-700"
                   onClick={handleApprove}
+                  disabled={loading || event.status === 'APPROVED'}
                 >
                   <FaCheck className="w-4 h-4 mr-2" />
                   Approve
@@ -174,6 +191,7 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
                   variant="outline"
                   className="bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
                   onClick={handleReject}
+                  disabled={loading || event.status === 'REJECTED'}
                 >
                   <FaTimes className="w-4 h-4 mr-2" />
                   Reject
@@ -190,6 +208,7 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
         onClose={() => setShowApproveModal(false)}
         onConfirm={handleApproveConfirm}
         eventName={event?.name}
+        loading={loading}
       />
 
       {/* Reject Modal */}
@@ -198,6 +217,7 @@ export default function EventDetailsModal({ event, isOpen, onClose }) {
         onClose={() => setShowRejectModal(false)}
         onConfirm={handleRejectConfirm}
         eventName={event?.name}
+        loading={loading}
       />
     </Dialog>
   )

@@ -183,6 +183,64 @@ const EventRequestApis = {
         message: error.message || `Failed to ${status} event request`
       };
     }
+  },
+
+  /**
+   * Approve an event request
+   * @param {string} id - Event request ID
+   * @returns {Promise<Object>} Updated event request data
+   */
+  approveEventRequest: async (id) => {
+    try {
+      if (!id) {
+        throw new Error('Event request ID is required');
+      }
+
+      const response = await axiosClient.post(`/event-request/${id}/approve`);
+
+      toast.success('Event request approved successfully');
+      return {
+        success: true,
+        message: 'Event request approved successfully',
+        data: response
+      };
+    } catch (error) {
+      console.error('Approve event request error:', error);
+      toast.error(error.message || 'Failed to approve event request');
+      return {
+        success: false,
+        message: error.message || 'Failed to approve event request'
+      };
+    }
+  },
+
+  /**
+   * Reject an event request
+   * @param {string} id - Event request ID
+   * @returns {Promise<Object>} Updated event request data
+   */
+  rejectEventRequest: async (id) => {
+    try {
+      if (!id) {
+        throw new Error('Event request ID is required');
+      }
+
+      const response = await axiosClient.post(`/event-request/${id}/reject`);
+
+      toast.success('Event request rejected successfully');
+      return {
+        success: true,
+        message: 'Event request rejected successfully',
+        data: response
+      };
+    } catch (error) {
+      console.error('Reject event request error:', error);
+      toast.error(error.message || 'Failed to reject event request');
+      return {
+        success: false,
+        message: error.message || 'Failed to reject event request'
+      };
+    }
   }
 };
 

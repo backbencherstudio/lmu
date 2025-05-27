@@ -2,9 +2,9 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Loader2 } from 'lucide-react'
 
-export default function ApproveRequestModal({ isOpen, onClose, onConfirm, eventName }) {
+export default function ApproveRequestModal({ isOpen, onClose, onConfirm, eventName, loading }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[400px]">
@@ -34,15 +34,24 @@ export default function ApproveRequestModal({ isOpen, onClose, onConfirm, eventN
             <Button
               variant="outline"
               onClick={onClose}
+              disabled={loading}
               className="border-gray-200"
             >
               Cancel
             </Button>
             <Button
               onClick={onConfirm}
+              disabled={loading}
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
-              Approve
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Approving...
+                </>
+              ) : (
+                'Approve'
+              )}
             </Button>
           </div>
         </div>

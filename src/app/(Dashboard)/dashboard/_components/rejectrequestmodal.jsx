@@ -2,9 +2,9 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { XCircle } from 'lucide-react'
+import { XCircle, Loader2 } from 'lucide-react'
 
-export default function RejectRequestModal({ isOpen, onClose, onConfirm, eventName }) {
+export default function RejectRequestModal({ isOpen, onClose, onConfirm, eventName, loading }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[400px]">
@@ -34,6 +34,7 @@ export default function RejectRequestModal({ isOpen, onClose, onConfirm, eventNa
             <Button
               variant="outline"
               onClick={onClose}
+              disabled={loading}
               className="border-gray-200"
             >
               Cancel
@@ -41,9 +42,17 @@ export default function RejectRequestModal({ isOpen, onClose, onConfirm, eventNa
             <Button
               variant="destructive"
               onClick={onConfirm}
+              disabled={loading}
               className="bg-orange-600 hover:bg-orange-700"
             >
-              Reject
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Rejecting...
+                </>
+              ) : (
+                'Reject'
+              )}
             </Button>
           </div>
         </div>
