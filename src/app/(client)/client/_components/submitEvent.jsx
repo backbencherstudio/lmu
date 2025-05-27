@@ -8,6 +8,15 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { IoArrowBack } from 'react-icons/io5'
+import EventApis from '../../../API/EventApi'
+
+const formatTimeToAMPM = (time) => {
+  const [hours, minutes] = time.split(':')
+  const hour = parseInt(hours, 10)
+  const ampm = hour >= 12 ? 'PM' : 'AM'
+  const formattedHour = hour % 12 || 12
+  return `${String(formattedHour).padStart(2, '0')}:${minutes} ${ampm}`
+}
 
 export default function SubmitEvent() {
   const router = useRouter();
@@ -63,30 +72,28 @@ export default function SubmitEvent() {
       setIsLoading(true)
       const startDate = format(dateRange[0].startDate, 'yyyy-MM-dd')
       const endDate = format(dateRange[0].endDate, 'yyyy-MM-dd')
-      const startTime = timeRange.startTime
-      const endTime = timeRange.endTime
-
-      const start = new Date(`${startDate}T${startTime}`)
-      const end = new Date(`${endDate}T${endTime}`)
+      const formattedStartTime = formatTimeToAMPM(timeRange.startTime)
+      const formattedEndTime = formatTimeToAMPM(timeRange.endTime)
       
-      if (end <= start) {
+      if (new Date(`${endDate}T${timeRange.endTime}`) <= new Date(`${startDate}T${timeRange.startTime}`)) {
         toast.error('End date/time must be after start date/time')
         return
       }
 
       const eventData = {
         ...data,
-        startDate,
-        endDate,
-        startTime,
-        endTime,
+        startDate: `${startDate}`,
+        endDate: `${endDate}`,
+        startTime: formattedStartTime,
+        endTime: formattedEndTime,
       }
 
-      // TODO: Add your event submission API call here
-      console.log('Event data to submit:', eventData)
-      toast.success('Event submitted successfully')
-      resetForm()
-      router.push('/') // Redirect to landing page after successful submission
+      const response = await EventApis.createEvent(eventData)
+      
+      if (response.success) {
+        resetForm()
+        router.push('/') // Redirect to landing page after successful submission
+      }
       
     } catch (error) {
       console.error('Error submitting event:', error)
@@ -177,12 +184,12 @@ export default function SubmitEvent() {
               {...register("phone", { 
                 required: "Phone number is required",
                 pattern: {
-                  value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/,
-                  message: "Invalid phone number format"
+                  value: /^[0-9\-\+\(\)\s\.]{7,15}$/,
+                  message: "Phone number must be 7-15 characters long and can contain numbers and symbols"
                 }
               })}
               className={`w-full px-3.5 py-2.5 border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-blue-500`}
-              placeholder="Enter your phone number"
+              placeholder="Enter your phone number (e.g. +1 234-567-8901)"
             />
             {errors.phone && (
               <p className="text-sm text-red-500">{errors.phone.message}</p>
