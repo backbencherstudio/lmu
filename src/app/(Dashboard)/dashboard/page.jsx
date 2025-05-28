@@ -6,10 +6,14 @@ import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import EventApis from '../../API/EventApi'
 import { toast } from 'react-hot-toast'
-import { MdDelete, MdEdit, MdDownload } from 'react-icons/md'
 import * as XLSX from 'xlsx'
 import DeleteConfirmationModal from './_components/DeleteConfirmationModal'
 import EditEventModal from './_components/EditEventModal'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Download, Edit, Search, Trash2, Filter, Calendar, ArrowUpDown } from "lucide-react"
 
 export default function Dashboard() {
   const defaultFormState = {
@@ -412,81 +416,126 @@ export default function Dashboard() {
       </main>
 
       {/* Events Table */}
-      <div className="mt-10">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-semibold">All Events</h2>
-            <span className="text-sm text-gray-600">({events.length})</span>
+      <div className="container mx-auto py-8 px-4">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#02182d]/5 to-[#004d7a]/5 p-6 border-b border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-[#02182d] flex items-center gap-2">
+                  All Events
+                  <Badge className="bg-[#004d7a]/10 text-[#004d7a] hover:bg-[#004d7a]/20 ml-2">{events.length}</Badge>
+                </h1>
+                <p className="text-gray-500 text-sm mt-1">Manage your upcoming and past events</p>
+              </div>
+              <Button 
+                className="bg-[#004d7a] hover:bg-[#02182d] text-white w-full sm:w-auto transition-colors"
+                onClick={handleDownload}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download Excel
+              </Button>
+            </div>
           </div>
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <MdDownload className="w-5 h-5" />
-            <span>Download Excel</span>
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {events.map((event) => (
-                <tr key={event.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {event.name.split(' ').slice(0, 6).join(' ')}
-                    {event.name.split(' ').length > 6 ? '...' : ''}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {event.description.includes('http') 
-                      ? event.description.length > 45 
-                        ? event.description.substring(0, 45) + '...'
-                        : event.description
-                      : event.description.split(' ').slice(0, 7).join(' ') + 
-                        (event.description.split(' ').length > 7 ? '...' : '')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(event.startDate + 'T00:00:00'), 'MMM dd, yyyy')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(event.endDate + 'T00:00:00'), 'MMM dd, yyyy')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {event.startTime}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {event.endTime}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleEditClick(event)}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 disabled:opacity-50 transition-colors duration-200 rounded hover:bg-blue-50"
-                      >
-                        <MdEdit size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(event)}
-                        disabled={isDeleting}
-                        className="p-1.5 text-gray-400 hover:text-red-600 disabled:opacity-50 transition-colors duration-200 rounded hover:bg-red-50"
-                      >
-                        <MdDelete size={20} />
-                      </button>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-[#02182d]/5 hover:bg-[#02182d]/5">
+                  <TableHead className="font-semibold text-[#02182d] w-[250px]">
+                    <div className="flex items-center">
+                      NAME
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </TableHead>
+                  <TableHead className="font-semibold text-[#02182d]">DESCRIPTION</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]">
+                    <div className="flex items-center">
+                      START DATE
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
+                    </div>
+                  </TableHead>
+                  <TableHead className="font-semibold text-[#02182d]">END DATE</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]">START TIME</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]">END TIME</TableHead>
+                  <TableHead className="font-semibold text-[#02182d] text-right">ACTIONS</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {events.slice(0, 20).map((event, index) => (
+                  <TableRow
+                    key={event.id}
+                    className={`hover:bg-[#004d7a]/5 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-[#02182d]/5"}`}
+                  >
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-6 bg-[#004d7a] rounded-full"></div>
+                        <span className="text-[#02182d]">{event.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-gray-600 max-w-[300px] truncate">{event.description}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="bg-[#004d7a]/10 text-[#004d7a] border-[#004d7a]/20">
+                        {format(new Date(event.startDate + 'T00:00:00'), 'MMM dd, yyyy')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="bg-[#02182d]/10 text-[#02182d] border-[#02182d]/20">
+                        {format(new Date(event.endDate + 'T00:00:00'), 'MMM dd, yyyy')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-600">{event.startTime}</TableCell>
+                    <TableCell className="text-gray-600">{event.endTime}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-gray-500 hover:text-[#004d7a] hover:bg-[#004d7a]/10"
+                          onClick={() => handleEditClick(event)}
+                        >
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit</span>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeleteClick(event)}
+                          disabled={isDeleting}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete</span>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-[#02182d]/5 px-6 py-3 border-t border-gray-100 flex justify-between items-center">
+            <div className="text-sm text-gray-600">Showing {Math.min(20, events.length)} of {events.length} events</div>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-[#02182d] border-[#02182d]/20 hover:bg-[#004d7a]/10 hover:text-[#004d7a] hover:border-[#004d7a]/30"
+              >
+                Previous
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-[#02182d] border-[#02182d]/20 hover:bg-[#004d7a]/10 hover:text-[#004d7a] hover:border-[#004d7a]/30"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
