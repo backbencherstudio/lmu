@@ -16,6 +16,13 @@ import { Badge } from "@/components/ui/badge"
 import { Download, Edit, Search, Trash2, Filter, Calendar, ArrowUpDown } from "lucide-react"
 
 export default function Dashboard() {
+  // Add this helper function at the start of the component
+  const truncateToSixWords = (text) => {
+    const words = text.split(' ');
+    if (words.length <= 7) return text;
+    return words.slice(0, 7).join(' ') + '...';
+  };
+
   const defaultFormState = {
     name: '',
     dateRange: [{
@@ -496,7 +503,7 @@ export default function Dashboard() {
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <div className="w-1 h-6 bg-[#004d7a]/60 rounded-full"></div>
-                        <span className="text-[#02182d]/90">{event.name}</span>
+                        <span className="text-[#02182d]/90" title={event.name}>{truncateToSixWords(event.name)}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-gray-500 max-w-[300px] truncate">{event.description}</TableCell>
