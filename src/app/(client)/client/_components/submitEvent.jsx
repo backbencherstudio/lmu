@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { format } from 'date-fns'
 import { toast } from 'react-hot-toast'
@@ -20,6 +20,32 @@ const DateRange = dynamic(
   }
 )
 
+// Custom hook to handle window resize
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: undefined
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth
+      });
+    }
+    
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+    
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures effect is only run on mount
+
+  return windowSize;
+}
+
 // Dynamically import the CSS
 if (typeof window !== 'undefined') {
   import('react-date-range/dist/styles.css')
@@ -36,6 +62,7 @@ const formatTimeToAMPM = (time) => {
 
 export default function SubmitEvent() {
   const router = useRouter();
+  const { width } = useWindowSize();
   const defaultDateRange = [{
     startDate: new Date(),
     endDate: new Date(),
@@ -239,7 +266,7 @@ export default function SubmitEvent() {
                 <DateRange
                   ranges={dateRange}
                   onChange={handleDateRangeChange}
-                  months={window?.innerWidth < 640 ? 1 : 1}
+                  months={width < 640 ? 1 : 1}
                   direction="horizontal"
                   className="border-0 !w-full"
                   rangeColors={['#006198']}
