@@ -43,13 +43,14 @@ const doesEventCrossMidnight = (startTime, endTime) => {
 const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
   if (!isOpen || !event) return null;
 
+  // Initialize with original event times
   const [formData, setFormData] = useState({
     name: event.name,
     description: event.description,
     startDate: format(new Date(event.startDate), 'yyyy-MM-dd'),
     endDate: format(new Date(event.endDate), 'yyyy-MM-dd'),
-    startTime: event.startTime,
-    endTime: event.endTime
+    startTime: event.startTime,  // Keep original time format
+    endTime: event.endTime      // Keep original time format
   });
 
   // Effect to handle date adjustment when time crosses midnight
@@ -116,6 +117,10 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
           <h3 className="text-lg font-semibold text-gray-900">
             Edit Event
           </h3>
+          {/* Display original times for reference */}
+          <p className="text-sm text-gray-500 mt-1">
+            Original times: {event.startTime} - {event.endTime}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">

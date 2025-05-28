@@ -11,56 +11,6 @@ import * as XLSX from 'xlsx'
 import DeleteConfirmationModal from './_components/DeleteConfirmationModal'
 import EditEventModal from './_components/EditEventModal'
 
-// Utility function to convert 12h to 24h format
-const convert12to24 = (time12h) => {
-  const [time, modifier] = time12h.split(' ');
-  let [hours, minutes] = time.split(':');
-
-  if (hours === '12') {
-    hours = '00';
-  }
-
-  if (modifier === 'PM') {
-    hours = parseInt(hours, 10) + 12;
-  }
-
-  return `${hours.padStart(2, '0')}:${minutes}`;
-};
-
-// Utility function to convert 24h to 12h format
-const convert24to12 = (time24h) => {
-  const [hours, minutes] = time24h.split(':');
-  const hour = parseInt(hours, 10);
-  
-  if (hour === 0) {
-    return `12:${minutes} AM`;
-  } else if (hour < 12) {
-    return `${hour}:${minutes} AM`;
-  } else if (hour === 12) {
-    return `12:${minutes} PM`;
-  } else {
-    return `${hour - 12}:${minutes} PM`;
-  }
-};
-
-// Utility function to keep original time (no adjustment)
-const adjustTimeForDashboard = (time24h) => {
-  if (!time24h) return time24h;
-  try {
-    const [hours, minutes] = time24h.split(':');
-    if (!hours || !minutes) return time24h;
-    
-    let adjustedHours = parseInt(hours, 10) - 0;
-    if (adjustedHours < 0) adjustedHours += 24;
-    if (isNaN(adjustedHours)) return time24h;
-    
-    return `${adjustedHours.toString().padStart(2, '0')}:${minutes}`;
-  } catch (error) {
-    console.error('Error adjusting time:', error);
-    return time24h;
-  }
-};
-
 export default function Dashboard() {
   const defaultFormState = {
     name: '',
@@ -268,8 +218,8 @@ export default function Dashboard() {
         'Description': event.description,
         'Start Date': format(new Date(event.startDate), 'MMM dd, yyyy'),
         'End Date': format(new Date(event.endDate), 'MMM dd, yyyy'),
-        'Start Time': convert24to12(event.startTime),
-        'End Time': convert24to12(event.endTime)
+        'Start Time': event.startTime,
+        'End Time': event.endTime
       }));
 
       // Create worksheet
@@ -511,10 +461,10 @@ export default function Dashboard() {
                     {format(new Date(event.endDate + 'T00:00:00'), 'MMM dd, yyyy')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {convert24to12(adjustTimeForDashboard(event.startTime))}
+                    {event.startTime}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {convert24to12(adjustTimeForDashboard(event.endTime))}
+                    {event.endTime}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex items-center gap-2">

@@ -10,14 +10,12 @@ const EventApis = {
   createEvent: async (data) => {
     try {
       // Basic validation
-      if (!data.name || !data.email || !data.phone || !data.description) {
+      if (!data.name || !data.description || !data.startDate || !data.endDate || !data.startTime || !data.endTime) {
         throw new Error('All required fields must be filled');
       }
 
-      const response = await axiosClient.post('/event-request', {
+      const response = await axiosClient.post('/event', {
         name: data.name,
-        email: data.email,
-        phone: data.phone,
         description: data.description,
         startDate: data.startDate,
         endDate: data.endDate,
