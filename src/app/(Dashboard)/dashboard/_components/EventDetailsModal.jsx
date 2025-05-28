@@ -34,7 +34,9 @@ export default function EventDetailsModal({ event, isOpen, onClose, onStatusChan
   }
 
   const formatTime = (time24h) => {
-    const [hours, minutes] = time24h.split(':');
+    // Remove any existing AM/PM from the input
+    const timeOnly = time24h.replace(/\s*[AaPp][Mm]\s*/, '');
+    const [hours, minutes] = timeOnly.split(':');
     const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const hour12 = hour % 12 || 12;
