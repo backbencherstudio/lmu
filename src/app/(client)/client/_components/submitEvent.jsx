@@ -1,15 +1,16 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
 import { format } from 'date-fns'
 import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { IoArrowBack } from 'react-icons/io5'
 import EventApis from '../../../API/EventApi'
+import dynamic from 'next/dynamic'
 
+// Dynamically import DateRange with no SSR
 const DateRange = dynamic(
-  () => import('react-date-range').then(mod => mod.DateRange),
+  () => import('react-date-range').then((mod) => mod.DateRange),
   { 
     ssr: false,
     loading: () => (
@@ -20,36 +21,32 @@ const DateRange = dynamic(
   }
 )
 
-// Custom hook to handle window resize
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    width: undefined
-  });
-
+// Custom hook for CSS imports
+const useDateRangeStyles = () => {
   useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth
-      });
-    }
-    
-    // Add event listener
-    window.addEventListener("resize", handleResize);
-    
-    // Call handler right away so state gets updated with initial window size
-    handleResize();
-    
-    // Remove event listener on cleanup
-    return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty array ensures effect is only run on mount
-
-  return windowSize;
+    import('react-date-range/dist/styles.css')
+    import('react-date-range/dist/theme/default.css')
+  }, [])
 }
 
-// Dynamically import the CSS
-if (typeof window !== 'undefined') {
-  import('react-date-range/dist/styles.css')
-  import('react-date-range/dist/theme/default.css')
+// Custom hook for window size
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 640
+  })
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth })
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowSize
 }
 
 const formatTimeToAMPM = (time) => {
@@ -61,8 +58,12 @@ const formatTimeToAMPM = (time) => {
 }
 
 export default function SubmitEvent() {
-  const router = useRouter();
-  const { width } = useWindowSize();
+  // Initialize hooks
+  useDateRangeStyles()
+  const { width } = useWindowSize()
+  const router = useRouter()
+
+  // Form state
   const defaultDateRange = [{
     startDate: new Date(),
     endDate: new Date(),
@@ -74,22 +75,26 @@ export default function SubmitEvent() {
     endTime: '12:00'
   }
 
-  const [dateRange, setDateRange] = React.useState(defaultDateRange)
-  const [timeRange, setTimeRange] = React.useState(defaultTimeRange)
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [dateRange, setDateRange] = useState(defaultDateRange)
+  const [timeRange, setTimeRange] = useState(defaultTimeRange)
+  const [isLoading, setIsLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-    setValue,
+    reset
   } = useForm({
     defaultValues: {
       name: '',
       email: '',
       phone: '',
-      description: '',
+      description: ''
     }
   })
 
@@ -125,17 +130,17 @@ export default function SubmitEvent() {
 
       const eventData = {
         ...data,
-        startDate: `${startDate}`,
-        endDate: `${endDate}`,
+        startDate,
+        endDate,
         startTime: formattedStartTime,
-        endTime: formattedEndTime,
+        endTime: formattedEndTime
       }
 
       const response = await EventApis.createEvent(eventData)
       
       if (response.success) {
         resetForm()
-        router.push('/') // Redirect to landing page after successful submission
+        router.push('/')
       }
       
     } catch (error) {
@@ -144,6 +149,22 @@ export default function SubmitEvent() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
