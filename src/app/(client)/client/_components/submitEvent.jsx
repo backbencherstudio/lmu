@@ -1,14 +1,30 @@
 'use client'
 import React from 'react'
-import { DateRange } from 'react-date-range'
+import dynamic from 'next/dynamic'
 import { format } from 'date-fns'
-import 'react-date-range/dist/styles.css'
-import 'react-date-range/dist/theme/default.css'
 import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { IoArrowBack } from 'react-icons/io5'
 import EventApis from '../../../API/EventApi'
+
+const DateRange = dynamic(
+  () => import('react-date-range').then(mod => mod.DateRange),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse">
+        <div className="h-64 bg-gray-200 rounded"></div>
+      </div>
+    )
+  }
+)
+
+// Dynamically import the CSS
+if (typeof window !== 'undefined') {
+  import('react-date-range/dist/styles.css')
+  import('react-date-range/dist/theme/default.css')
+}
 
 const formatTimeToAMPM = (time) => {
   const [hours, minutes] = time.split(':')
