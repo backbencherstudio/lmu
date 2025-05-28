@@ -417,19 +417,19 @@ export default function Dashboard() {
 
       {/* Events Table */}
       <div className="container mx-auto py-8 px-4">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#02182d]/5 to-[#004d7a]/5 p-6 border-b border-gray-100">
+          <div className="bg-gradient-to-r from-[#004d7a]/3 to-[#004d7a]/5 p-6 border-b border-gray-100">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h1 className="text-2xl font-bold text-[#02182d] flex items-center gap-2">
                   All Events
-                  <Badge className="bg-[#004d7a]/10 text-[#004d7a] hover:bg-[#004d7a]/20 ml-2">{events.length}</Badge>
+                  <Badge className="bg-[#004d7a]/5 text-[#004d7a] hover:bg-[#004d7a]/10 ml-2 font-medium">{events.length}</Badge>
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">Manage your upcoming and past events</p>
               </div>
               <Button 
-                className="bg-[#004d7a] hover:bg-[#02182d] text-white w-full sm:w-auto transition-colors"
+                className="bg-[#004d7a] hover:bg-[#004d7a]/90 text-white w-full sm:w-auto transition-colors"
                 onClick={handleDownload}
               >
                 <Download className="mr-2 h-4 w-4" />
@@ -442,57 +442,57 @@ export default function Dashboard() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[#02182d]/5 hover:bg-[#02182d]/5">
-                  <TableHead className="font-semibold text-[#02182d] w-[250px]">
+                <TableRow className="bg-[#004d7a]/3 hover:bg-[#004d7a]/3">
+                  <TableHead className="font-semibold text-[#02182d]/80 w-[250px]">
                     <div className="flex items-center">
                       NAME
                       <ArrowUpDown className="ml-1 h-3 w-3" />
                     </div>
                   </TableHead>
-                  <TableHead className="font-semibold text-[#02182d]">DESCRIPTION</TableHead>
-                  <TableHead className="font-semibold text-[#02182d]">
+                  <TableHead className="font-semibold text-[#02182d]/80">DESCRIPTION</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]/80">
                     <div className="flex items-center">
                       START DATE
                       <ArrowUpDown className="ml-1 h-3 w-3" />
                     </div>
                   </TableHead>
-                  <TableHead className="font-semibold text-[#02182d]">END DATE</TableHead>
-                  <TableHead className="font-semibold text-[#02182d]">START TIME</TableHead>
-                  <TableHead className="font-semibold text-[#02182d]">END TIME</TableHead>
-                  <TableHead className="font-semibold text-[#02182d] text-right">ACTIONS</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]/80">END DATE</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]/80">START TIME</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]/80">END TIME</TableHead>
+                  <TableHead className="font-semibold text-[#02182d]/80 text-right">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {events.slice(0, 20).map((event, index) => (
                   <TableRow
                     key={event.id}
-                    className={`hover:bg-[#004d7a]/5 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-[#02182d]/5"}`}
+                    className={`hover:bg-[#004d7a]/3 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-[#004d7a]/3"}`}
                   >
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <div className="w-1 h-6 bg-[#004d7a] rounded-full"></div>
-                        <span className="text-[#02182d]">{event.name}</span>
+                        <div className="w-1 h-6 bg-[#004d7a]/60 rounded-full"></div>
+                        <span className="text-[#02182d]/90">{event.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-gray-600 max-w-[300px] truncate">{event.description}</TableCell>
+                    <TableCell className="text-gray-500 max-w-[300px] truncate">{event.description}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-[#004d7a]/10 text-[#004d7a] border-[#004d7a]/20">
+                      <Badge variant="outline" className="bg-[#004d7a]/5 text-[#004d7a] border-[#004d7a]/10 font-medium">
                         {format(new Date(event.startDate + 'T00:00:00'), 'MMM dd, yyyy')}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="bg-[#02182d]/10 text-[#02182d] border-[#02182d]/20">
+                      <Badge variant="outline" className="bg-[#004d7a]/5 text-[#004d7a] border-[#004d7a]/10 font-medium">
                         {format(new Date(event.endDate + 'T00:00:00'), 'MMM dd, yyyy')}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-gray-600">{event.startTime}</TableCell>
-                    <TableCell className="text-gray-600">{event.endTime}</TableCell>
+                    <TableCell className="text-gray-500">{event.startTime}</TableCell>
+                    <TableCell className="text-gray-500">{event.endTime}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-8 w-8 text-gray-500 hover:text-[#004d7a] hover:bg-[#004d7a]/10"
+                          className="h-8 w-8 text-gray-400 hover:text-[#004d7a] hover:bg-[#004d7a]/5"
                           onClick={() => handleEditClick(event)}
                         >
                           <Edit className="h-4 w-4" />
@@ -501,7 +501,7 @@ export default function Dashboard() {
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                          className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50"
                           onClick={() => handleDeleteClick(event)}
                           disabled={isDeleting}
                         >
@@ -517,20 +517,20 @@ export default function Dashboard() {
           </div>
 
           {/* Footer */}
-          <div className="bg-[#02182d]/5 px-6 py-3 border-t border-gray-100 flex justify-between items-center">
-            <div className="text-sm text-gray-600">Showing {Math.min(20, events.length)} of {events.length} events</div>
+          <div className="bg-[#004d7a]/3 px-6 py-3 border-t border-gray-100 flex justify-between items-center">
+            <div className="text-sm text-gray-500">Showing {Math.min(20, events.length)} of {events.length} events</div>
             <div className="flex items-center gap-2">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-[#02182d] border-[#02182d]/20 hover:bg-[#004d7a]/10 hover:text-[#004d7a] hover:border-[#004d7a]/30"
+                className="text-[#004d7a] border-[#004d7a]/10 hover:bg-[#004d7a]/5 hover:text-[#004d7a] hover:border-[#004d7a]/20"
               >
                 Previous
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-[#02182d] border-[#02182d]/20 hover:bg-[#004d7a]/10 hover:text-[#004d7a] hover:border-[#004d7a]/30"
+                className="text-[#004d7a] border-[#004d7a]/10 hover:bg-[#004d7a]/5 hover:text-[#004d7a] hover:border-[#004d7a]/20"
               >
                 Next
               </Button>

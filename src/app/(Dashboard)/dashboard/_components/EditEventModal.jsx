@@ -1,56 +1,42 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { format, addDays, parse } from 'date-fns'
+import { format, addDays } from 'date-fns'
 
-// Convert 12-hour time (e.g. "11:00 PM") to 24-hour format (e.g. "23:00")
-const convertTo24Hour = (time12h) => {
-  if (!time12h) return '00:00';
-  // If already in 24-hour format (e.g. "23:00"), return as is
-  if (!time12h.includes(' ')) return time12h;
-
-  const [time, modifier] = time12h.split(' ');
-  let [hours, minutes] = time.split(':').map(Number);
-
-  if (modifier === 'PM' && hours < 12) hours += 12;
-  if (modifier === 'AM' && hours === 12) hours = 0;
-
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-};
-
-// Convert 24-hour time (e.g. "23:00") to 12-hour format (e.g. "11:00 PM")
-const convertTo12Hour = (time24h) => {
-  if (!time24h) return '';
-  // If already in 12-hour format (contains AM/PM), return as is
-  if (time24h.includes(' ')) return time24h;
-  
-  let [hours, minutes] = time24h.split(':').map(Number);
-  // Swap AM/PM logic
-  const period = hours >= 12 ? 'AM' : 'PM';  // Changed PM to AM and AM to PM
-  hours = hours % 12 || 12;
-  return `${hours}:${minutes.toString().padStart(2, '0')} ${period}`;
+// Ensure time is in 24-hour format
+const ensureTimeFormat = (time) => {
+  if (!time) return '00:00';
+  // If time includes AM/PM, convert it to 24-hour format
+  if (time.includes(' ')) {
+    const [timeStr, modifier] = time.split(' ');
+    let [hours, minutes] = timeStr.split(':').map(Number);
+    
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+  // If already in 24-hour format, return as is
+  return time;
 };
 
 // Check if event crosses midnight
 const doesEventCrossMidnight = (startTime, endTime) => {
   if (!startTime || !endTime) return false;
-  const start24 = convertTo24Hour(startTime);
-  const end24 = convertTo24Hour(endTime);
-  const [startHours] = start24.split(':').map(Number);
-  const [endHours] = end24.split(':').map(Number);
+  const [startHours] = startTime.split(':').map(Number);
+  const [endHours] = endTime.split(':').map(Number);
   return endHours < startHours;
 };
 
 const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
   if (!isOpen || !event) return null;
 
-  // Initialize with original event times
   const [formData, setFormData] = useState({
     name: event.name,
     description: event.description,
     startDate: format(new Date(event.startDate), 'yyyy-MM-dd'),
     endDate: format(new Date(event.endDate), 'yyyy-MM-dd'),
-    startTime: event.startTime,  // Keep original time format
-    endTime: event.endTime      // Keep original time format
+    startTime: ensureTimeFormat(event.startTime),
+    endTime: ensureTimeFormat(event.endTime)
   });
 
   // Effect to handle date adjustment when time crosses midnight
@@ -65,11 +51,6 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
   }, [formData.startTime, formData.endTime, formData.startDate]);
 
   const handleTimeChange = (field, value) => {
-    // For time inputs, convert the 24-hour input value to 12-hour format
-    if (field === 'startTime' || field === 'endTime') {
-      value = convertTo12Hour(value);
-    }
-    
     setFormData(prev => {
       const newData = { ...prev, [field]: value };
       
@@ -95,17 +76,8 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const adjustedData = {
-      ...formData,
-      startTime: convertTo12Hour(convertTo24Hour(formData.startTime)),
-      endTime: convertTo12Hour(convertTo24Hour(formData.endTime))
-    };
-    onConfirm(adjustedData);
+    onConfirm(formData);
   };
-
-  // Convert times to 24-hour format for input elements
-  const startTime24 = convertTo24Hour(formData.startTime);
-  const endTime24 = convertTo24Hour(formData.endTime);
 
   return (
     <div className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
@@ -117,10 +89,6 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
           <h3 className="text-lg font-semibold text-gray-900">
             Edit Event
           </h3>
-          {/* Display original times for reference */}
-          <p className="text-sm text-gray-500 mt-1">
-            Original times: {event.startTime} - {event.endTime}
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
@@ -189,7 +157,7 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
                 </label>
                 <input
                   type="time"
-                  value={startTime24}
+                  value={formData.startTime}
                   onChange={(e) => handleTimeChange('startTime', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -200,7 +168,7 @@ const EditEventModal = ({ isOpen, onClose, onConfirm, event }) => {
                 </label>
                 <input
                   type="time"
-                  value={endTime24}
+                  value={formData.endTime}
                   onChange={(e) => handleTimeChange('endTime', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
