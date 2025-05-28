@@ -11,42 +11,17 @@ import dynamic from 'next/dynamic'
 // Dynamically import DateRange with no SSR
 const DateRange = dynamic(
   () => import('react-date-range').then((mod) => mod.DateRange),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="animate-pulse">
-        <div className="h-64 bg-gray-200 rounded"></div>
-      </div>
-    )
-  }
+  { ssr: false }
 )
 
 // Custom hook for CSS imports
 const useDateRangeStyles = () => {
   useEffect(() => {
-    import('react-date-range/dist/styles.css')
-    import('react-date-range/dist/theme/default.css')
+    Promise.all([
+      import('react-date-range/dist/styles.css'),
+      import('react-date-range/dist/theme/default.css')
+    ])
   }, [])
-}
-
-// Custom hook for window size
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 640
-  })
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth })
-    }
-
-    window.addEventListener('resize', handleResize)
-    handleResize()
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  return windowSize
 }
 
 const formatTimeToAMPM = (time) => {
@@ -60,7 +35,6 @@ const formatTimeToAMPM = (time) => {
 export default function SubmitEvent() {
   // Initialize hooks
   useDateRangeStyles()
-  const { width } = useWindowSize()
   const router = useRouter()
 
   // Form state
@@ -78,10 +52,15 @@ export default function SubmitEvent() {
   const [dateRange, setDateRange] = useState(defaultDateRange)
   const [timeRange, setTimeRange] = useState(defaultTimeRange)
   const [isLoading, setIsLoading] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const [screenWidth, setScreenWidth] = useState(640)
 
   useEffect(() => {
-    setMounted(true)
+    setIsMounted(true)
+    const handleResize = () => setScreenWidth(window.innerWidth)
+    setScreenWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const {
@@ -151,7 +130,7 @@ export default function SubmitEvent() {
     }
   }
 
-  if (!mounted) {
+  if (!isMounted) {
     return (
       <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
         <div className="animate-pulse space-y-4">
@@ -287,7 +266,7 @@ export default function SubmitEvent() {
                 <DateRange
                   ranges={dateRange}
                   onChange={handleDateRangeChange}
-                  months={width < 640 ? 1 : 1}
+                  months={screenWidth < 640 ? 1 : 1}
                   direction="horizontal"
                   className="border-0 !w-full"
                   rangeColors={['#006198']}
