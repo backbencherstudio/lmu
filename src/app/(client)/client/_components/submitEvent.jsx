@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { IoArrowBack } from 'react-icons/io5'
-import EventApis from '../../../API/EventApi'
+import EventRequestApis from '../../../API/EventreqApi'
 import dynamic from 'next/dynamic'
 
 // Dynamically import DateRange with no SSR
@@ -108,14 +108,17 @@ export default function SubmitEvent() {
       }
 
       const eventData = {
-        ...data,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        description: data.description,
         startDate,
         endDate,
         startTime: formattedStartTime,
         endTime: formattedEndTime
       }
 
-      const response = await EventApis.createEvent(eventData)
+      const response = await EventRequestApis.createEventRequest(eventData)
       
       if (response.success) {
         resetForm()

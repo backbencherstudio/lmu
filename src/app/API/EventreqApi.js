@@ -5,20 +5,33 @@ const EventRequestApis = {
   /**
    * Create a new event request
    * @param {Object} data - Event request data
-   * @param {string} data.eventId - Associated event ID
-   * @param {string} data.userId - Requesting user ID
-   * @param {string} data.status - Request status (pending, approved, rejected)
-   * @param {string} data.message - Request message/reason
+   * @param {string} data.name - Event name
+   * @param {string} data.email - Contact email
+   * @param {string} data.phone - Contact phone
+   * @param {string} data.description - Event description
+   * @param {string} data.startDate - Event start date (YYYY-MM-DD)
+   * @param {string} data.endDate - Event end date (YYYY-MM-DD)
+   * @param {string} data.startTime - Event start time (HH:MM AM/PM)
+   * @param {string} data.endTime - Event end time (HH:MM AM/PM)
    * @returns {Promise<Object>} Created event request data
    */
   createEventRequest: async (data) => {
     try {
       // Basic validation
-      if (!data.eventId || !data.userId) {
-        throw new Error('Event ID and User ID are required');
+      if (!data.name || !data.email || !data.phone || !data.description || !data.startDate || !data.endDate || !data.startTime || !data.endTime) {
+        throw new Error('All required fields must be filled');
       }
 
-      const response = await axiosClient.post('/event-request', data);
+      const response = await axiosClient.post('/event-request', {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        description: data.description,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        startTime: data.startTime,
+        endTime: data.endTime
+      });
       
       if (!response.success) {
         throw new Error(response.message || 'Failed to create event request');

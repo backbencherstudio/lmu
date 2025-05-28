@@ -100,7 +100,7 @@ export default function Register({ isOpen, onClose }) {
                       </div>
                       <input
                         {...register("lastName", { required: "Last name is required" })}
-                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline outline-1 outline-offset-[-1px] outline-[#006198]"
+                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline-1 outline-offset-[-1px] outline-[#006198]"
                         disabled={isLoading}
                       />
                       {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
@@ -119,7 +119,7 @@ export default function Register({ isOpen, onClose }) {
                             message: "Invalid email address"
                           }
                         })}
-                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline outline-1 outline-offset-[-1px] outline-[#006198]"
+                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline-1 outline-offset-[-1px] outline-[#006198]"
                         disabled={isLoading}
                       />
                       {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
@@ -132,7 +132,7 @@ export default function Register({ isOpen, onClose }) {
                       </div>
                       <input
                         {...register("companyName")}
-                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline outline-1 outline-offset-[-1px] outline-[#006198]"
+                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline-1 outline-offset-[-1px] outline-[#006198]"
                         disabled={isLoading}
                       />
                     </div>
@@ -144,7 +144,7 @@ export default function Register({ isOpen, onClose }) {
                       </div>
                       <input
                         {...register("jobTitle")}
-                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline outline-1 outline-offset-[-1px] outline-[#006198]"
+                        className="self-stretch flex-1 pl-5 pr-4 py-3 bg-[#f2f7fa] rounded-md outline-1 outline-offset-[-1px] outline-[#006198]"
                         disabled={isLoading}
                       />
                     </div>
