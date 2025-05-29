@@ -223,12 +223,11 @@ export default function SubmitEvent() {
           {/* Phone Number */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Phone Number <span className="text-purple-500">*</span>
+              Phone Number
             </label>
             <input 
               type="tel"
               {...register("phone", { 
-                required: "Phone number is required",
                 pattern: {
                   value: /^[0-9\-\+\(\)\s\.]{7,15}$/,
                   message: "Phone number must be 7-15 characters long and can contain numbers and symbols"

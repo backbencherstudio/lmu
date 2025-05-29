@@ -32,7 +32,7 @@ export default function EventRequestClient() {
     setIsDeleteModalOpen(false)
     setEventToDelete(null)
   }
-
+//   https://one.google.com/join/ai-student
   const handleViewDetails = (event) => {
     setSelectedEvent(event)
     setIsModalOpen(true)
