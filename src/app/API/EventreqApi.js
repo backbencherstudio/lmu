@@ -1,5 +1,6 @@
 import axiosClient from '../../utils/axiosClient';
 import { toast } from 'react-hot-toast';
+import { ensureTimeFormat } from '../utils/timeUtils';
 
 const EventRequestApis = {
   /**
@@ -11,8 +12,8 @@ const EventRequestApis = {
    * @param {string} data.description - Event description
    * @param {string} data.startDate - Event start date (YYYY-MM-DD)
    * @param {string} data.endDate - Event end date (YYYY-MM-DD)
-   * @param {string} data.startTime - Event start time (HH:MM AM/PM)
-   * @param {string} data.endTime - Event end time (HH:MM AM/PM)
+   * @param {string} data.startTime - Event start time (will be converted to 24-hour format)
+   * @param {string} data.endTime - Event end time (will be converted to 24-hour format)
    * @returns {Promise<Object>} Created event request data
    */
   createEventRequest: async (data) => {
@@ -22,6 +23,10 @@ const EventRequestApis = {
         throw new Error('All required fields must be filled');
       }
 
+      // Ensure times are in 24-hour format
+      const startTime = ensureTimeFormat(data.startTime);
+      const endTime = ensureTimeFormat(data.endTime);
+
       const response = await axiosClient.post('/event-request', {
         name: data.name,
         email: data.email,
@@ -29,8 +34,8 @@ const EventRequestApis = {
         description: data.description,
         startDate: data.startDate,
         endDate: data.endDate,
-        startTime: data.startTime,
-        endTime: data.endTime
+        startTime: startTime,
+        endTime: endTime
       });
       
       if (!response.success) {

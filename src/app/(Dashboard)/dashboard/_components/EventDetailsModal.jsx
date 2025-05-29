@@ -16,6 +16,7 @@ import ApproveRequestModal from './approverequestmodal'
 import RejectRequestModal from './rejectrequestmodal'
 import EventRequestApis from '@/app/API/EventreqApi'
 import { toast } from 'react-hot-toast'
+import { convertTo12Hour } from '../../../utils/timeUtils'
 
 export default function EventDetailsModal({ event, isOpen, onClose, onStatusChange }) {
   const [showApproveModal, setShowApproveModal] = useState(false)
@@ -154,14 +155,18 @@ export default function EventDetailsModal({ event, isOpen, onClose, onStatusChan
                 <Clock className="w-4 h-4 text-blue-600 mr-2" />
                 <div>
                   <p className="text-sm font-medium text-gray-600">Start Time</p>
-                  <p className="text-gray-900">{formatTime(event.startTime)}</p>
+                  <p className="text-gray-900">
+                    {event.startTime} ({convertTo12Hour(event.startTime)})
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
                 <Clock className="w-4 h-4 text-red-600 mr-2" />
                 <div>
                   <p className="text-sm font-medium text-gray-600">End Time</p>
-                  <p className="text-gray-900">{formatTime(event.endTime)}</p>
+                  <p className="text-gray-900">
+                    {event.endTime} ({convertTo12Hour(event.endTime)})
+                  </p>
                 </div>
               </div>
             </div>

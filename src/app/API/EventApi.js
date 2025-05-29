@@ -1,5 +1,6 @@
 import axiosClient from '../../utils/axiosClient';
 import { toast } from 'react-hot-toast';
+import { ensureTimeFormat } from '../utils/timeUtils';
 
 const EventApis = {
   /**
@@ -14,13 +15,17 @@ const EventApis = {
         throw new Error('All required fields must be filled');
       }
 
+      // Ensure times are in 24-hour format
+      const startTime = ensureTimeFormat(data.startTime);
+      const endTime = ensureTimeFormat(data.endTime);
+
       const response = await axiosClient.post('/event', {
         name: data.name,
         description: data.description,
         startDate: data.startDate,
         endDate: data.endDate,
-        startTime: data.startTime,
-        endTime: data.endTime,
+        startTime: startTime,
+        endTime: endTime,
         timezone: "America/Cayman",
         status: "PENDING"
       });
